@@ -1,13 +1,11 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/geometry.dart';
-import 'package:flame/input.dart';
 import 'package:flame_centipede/src/game/game.dart';
-import 'package:flutter/widgets.dart';
 
 import 'components.dart';
 
 class CentipedeBlock extends SpriteComponent
-    with HasGameRef<FlameCentipede>, Hitbox, Collidable {
+    with HasGameRef<FlameCentipede>, CollisionCallbacks {
   static const speed = 50.0;
   static final dimensions = Vector2(16, 16);
 
@@ -22,7 +20,7 @@ class CentipedeBlock extends SpriteComponent
   Future<void> onLoad() async {
     await super.onLoad();
 
-    addHitbox(HitboxRectangle());
+    add(RectangleHitbox());
 
     size = dimensions;
     sprite = await gameRef.loadSprite('centipede-section.png');
@@ -54,15 +52,16 @@ class CentipedeBlock extends SpriteComponent
   }
 
   @override
-  void onCollision(_, Collidable other) {
+  void onCollision(Set<Vector2> points, PositionComponent other) {
+    super.onCollision(points, other);
     if (other is Bullet) {
-      other.shouldRemove = true;
-      shouldRemove = true;
+      other.removeFromParent();
+      removeFromParent();
       gameRef.add(Mushroom.atIndex(x, y));
     } else if (other is Mushroom) {
       _hitSomething();
     } else if (other is Player) {
-      other.shouldRemove = true;
+      other.removeFromParent();
       gameRef.gameOver();
     }
   }

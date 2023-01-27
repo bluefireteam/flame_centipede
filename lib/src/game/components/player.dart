@@ -1,14 +1,12 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/geometry.dart';
-import 'package:flame/input.dart';
 import 'package:flame_centipede/src/game/game.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'components.dart';
 
 class Player extends SpriteComponent
-    with HasGameRef<FlameCentipede>, KeyboardHandler, Hitbox, Collidable {
+    with HasGameRef<FlameCentipede>, KeyboardHandler, CollisionCallbacks {
   static const speed = 50.0;
 
   Vector2 direction = Vector2.zero();
@@ -24,11 +22,11 @@ class Player extends SpriteComponent
 
     x = (FlameCentipede.resolution.x / 2) - width / 2;
     y = FlameCentipede.resolution.y - height;
-    addHitbox(HitboxRectangle(relation: Vector2(0.8, 0.8)));
+    add(RectangleHitbox.relative(Vector2(0.8, 0.8), parentSize: size));
 
     sprite = await gameRef.loadSprite('player.png');
 
-    _shootTimer = Timer(0.5, callback: _shoot, repeat: true);
+    _shootTimer = Timer(0.5, onTick: _shoot, repeat: true);
   }
 
   @override

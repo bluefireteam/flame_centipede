@@ -1,12 +1,11 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/geometry.dart';
-import 'package:flame/input.dart';
 import 'package:flame_centipede/src/game/game.dart';
 
 import 'components.dart';
 
 class Mushroom extends SpriteGroupComponent<int>
-    with HasGameRef<FlameCentipede>, Hitbox, Collidable {
+    with HasGameRef<FlameCentipede>, CollisionCallbacks {
   static const speed = 20.0;
   static final dimensions = Vector2(8, 8);
 
@@ -25,7 +24,7 @@ class Mushroom extends SpriteGroupComponent<int>
   Future<void> onLoad() async {
     await super.onLoad();
 
-    addHitbox(HitboxRectangle());
+    add(RectangleHitbox());
 
     sprites = {
       3: await gameRef.loadSprite(
@@ -49,11 +48,12 @@ class Mushroom extends SpriteGroupComponent<int>
   }
 
   @override
-  void onCollisionEnd(Collidable other) {
+  void onCollisionEnd(PositionComponent other) {
+    super.onCollisionEnd(other);
     if (other is Bullet) {
-      other.shouldRemove = true;
+      other.removeFromParent();
       if (life == 1) {
-        shouldRemove = true;
+        removeFromParent();
       } else {
         life--;
         current = life;

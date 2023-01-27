@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flame: 1.0.0-releasecandidate.16
+  flame: 1.6.0
 
 dev_dependencies:
   flutter_test:

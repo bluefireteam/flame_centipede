@@ -1,10 +1,9 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/geometry.dart';
-import 'package:flame/input.dart';
 import 'package:flame_centipede/src/game/game.dart';
 
 class Bullet extends SpriteAnimationComponent
-    with HasGameRef<FlameCentipede>, Hitbox, Collidable {
+    with HasGameRef<FlameCentipede>, CollisionCallbacks {
   static const speed = -200.0;
   static final dimensions = Vector2(4, 4);
 
@@ -12,7 +11,7 @@ class Bullet extends SpriteAnimationComponent
   Future<void> onLoad() async {
     await super.onLoad();
 
-    addHitbox(HitboxRectangle());
+    add(RectangleHitbox());
 
     size = dimensions;
     animation = await gameRef.loadSpriteAnimation(
@@ -32,7 +31,7 @@ class Bullet extends SpriteAnimationComponent
     position.y += speed * dt;
 
     if (toRect().bottom <= 0) {
-      shouldRemove = true;
+      removeFromParent();
     }
   }
 }

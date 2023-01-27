@@ -6,7 +6,7 @@ import 'package:flame/input.dart';
 import 'components/components.dart';
 
 class FlameCentipede extends FlameGame
-    with HasKeyboardHandlerComponents, HasCollidables, PanDetector {
+    with HasKeyboardHandlerComponents, HasCollisionDetection, PanDetector {
   static final resolution = Vector2(256, 240);
 
   FlameCentipede() {
@@ -60,7 +60,7 @@ class FlameCentipede extends FlameGame
   }
 
   void gameOver() {
-    children.removeWhere((element) => element is! Background);
+    removeWhere((element) => element is! Background);
     _loadGame();
   }
 }
